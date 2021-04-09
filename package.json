@@ -47,9 +47,14 @@
       "ts-node/register"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.17.1",
+    "got": "^11.8.2"
+  },
   "devDependencies": {
     "@types/chai": "^4.2.15",
+    "@types/express": "^4.17.11",
+    "@types/got": "^9.6.11",
     "@types/mocha": "^8.2.1",
     "@types/node": "^14.14.28",
     "@types/sinon": "^9.0.11",
