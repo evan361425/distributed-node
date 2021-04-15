@@ -16,12 +16,17 @@
     "type": "git",
     "url": "git+https://github.com/104corp/node-typescript-template.git"
   },
+  "execMap": {
+    "ts": "node -r ts-node/register"
+  },
   "license": "SEE LICENSE IN LICENSE file",
   "author": "Shueh Chou Lu <evan.lu@104.com.tw>",
   "main": "index.js",
   "scripts": {
     "precompile": "rimraf src/**/*.js test/**/*.js",
     "compile": "tsc --project tsconfig.production.json",
+    "task-graphql-consumer": "nodemon src/web-api/consumer-graphql.ts",
+    "task-graphql-producer": "nodemon src/recipe-api/producer-graphql.ts",
     "test": "mocha",
     "pretest-coverage": "rimraf src/**/*.js test/**/*.js",
     "test-coverage": "nyc mocha",
@@ -49,7 +54,9 @@
   },
   "dependencies": {
     "express": "^4.17.1",
-    "got": "^11.8.2"
+    "express-graphql": "^0.12.0",
+    "got": "^11.8.2",
+    "graphql": "^15.5.0"
   },
   "devDependencies": {
     "@types/chai": "^4.2.15",
@@ -67,13 +74,14 @@
     "eslint-plugin-prettier": "^3.3.1",
     "husky": "^4",
     "mocha": "^8.3.0",
+    "nodemon": "^2.0.7",
     "npm-package-json-lint": "^5.1.0",
     "npm-package-json-lint-config-default": "^3.0.0",
     "nyc": "^15.1.0",
     "sinon": "^10.0.0",
     "sort-package-json": "^1",
     "source-map-support": "^0.5.19",
-    "ts-node": "^8.10.1",
+    "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   },
   "engines": {
