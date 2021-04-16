@@ -3,6 +3,7 @@
     "Masala",
     "QLID",
     "Tikka",
-    "graphiql"
+    "graphiql",
+    "grpc"
   ]
 }
