@@ -1,6 +1,6 @@
 /**
  * commands:
- * 1. npx ts-node src/recipe-api/producer-cluster-master.ts
+ * 1. npx ts-node src/recipe-api/producer-cluster.ts
  * 2.
  *   1. curl http://localhost:4000/recipes/42
  *   2. curl http://localhost:4000/recipes/42
@@ -14,7 +14,7 @@
 import cluster from 'cluster';
 
 console.log(`master pid=${process.pid}`);
-cluster.setupMaster({ exec: __dirname + '/producer-cluster-fork.ts' });
+cluster.setupMaster({ exec: __dirname + '/producer-http-basic.ts' });
 
 // fork two cluster
 cluster.fork();

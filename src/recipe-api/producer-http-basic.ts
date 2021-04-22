@@ -1,3 +1,8 @@
+/**
+ * Useful on multiple task
+ * 1. proxy - cluster module
+ * 2. proxy - HA proxy
+ */
 import express from 'express';
 
 const HOST = process.env.HOST || '127.0.0.1';

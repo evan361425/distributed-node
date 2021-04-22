@@ -4,6 +4,8 @@
     "QLID",
     "Tikka",
     "graphiql",
-    "grpc"
+    "grpc",
+    "haproxy",
+    "healthcheck"
   ]
 }
