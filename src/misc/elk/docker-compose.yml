@@ -1,0 +1,17 @@
+# docker run -p 5601:5601 -p 9200:9200 \
+#   -p 5044:5044 -p 7777:7777/udp \
+#   -v ./udp.conf:/etc/logstash/conf.d/99-input-udp.conf \
+#   -it --name distnode-elk sebp/elk
+
+version: '3'
+
+services:
+  elk:
+    image: sebp/elk
+    ports:
+      - '5601:5601' # Kibana
+      - '9200:9200' # Elasticsearch
+      - '5044:5044' # Logstash Beats
+      - '7777:7777/udp' # Logstash monitor API
+    volumes:
+      - ./udp.conf:/etc/logstash/conf.d/99-input-udp.conf

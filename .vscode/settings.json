@@ -1,11 +1,13 @@
 {
   "cSpell.words": [
+    "LOGSTASH",
     "Masala",
     "QLID",
     "Tikka",
     "graphiql",
     "grpc",
     "haproxy",
-    "healthcheck"
+    "healthcheck",
+    "pino"
   ]
 }
