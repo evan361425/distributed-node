@@ -1,9 +1,11 @@
 {
   "cSpell.words": [
+    "Grafana",
     "LOGSTASH",
     "Masala",
     "QLID",
     "Tikka",
+    "autocannon",
     "graphiql",
     "grpc",
     "haproxy",

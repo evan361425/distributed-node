@@ -1,0 +1,27 @@
+# Graphite:
+# docker run \
+#   -p 8080:80 \
+#   -p 8125:8125/udp \
+#   -it --name graphite graphiteapp/graphite-statsd:1.1.6-1
+# --------
+# Grafana:
+# docker run \
+#   -p 8000:3000 \
+#   -it --name grafana grafana/grafana:6.5.2
+#
+# 1. go to localhost:8000
+# 2. add data source: Graphite
+# 3. set http://graphite this is set by name of service (how docker connect each node)
+
+version: '3'
+
+services:
+  graphite:
+    image: graphiteapp/graphite-statsd
+    ports:
+      - '8080:80' # Graphite API
+      - '8125:8125/udp' # StatsD
+  grafana:
+    image: grafana/grafana
+    ports:
+      - 8000:3000
