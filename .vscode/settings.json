@@ -10,6 +10,7 @@
     "grpc",
     "haproxy",
     "healthcheck",
-    "pino"
+    "pino",
+    "zipkin"
   ]
 }
