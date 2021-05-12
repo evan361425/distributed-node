@@ -62,7 +62,6 @@
     "statsd-client": "^0.4.6",
     "zipkin": "^0.22.0",
     "zipkin-instrumentation-express": "^0.22.0",
-    "zipkin-instrumentation-gotjs": "^0.22.0",
     "zipkin-transport-http": "^0.22.0"
   },
   "devDependencies": {

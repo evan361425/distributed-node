@@ -6,16 +6,17 @@
  * 3. npx ts-node src/recipe-api/producer-http-zipkin.ts
  */
 import express from 'express';
-import got from 'got';
+import got, { Got, Options } from 'got';
 import {
   BatchRecorder,
   ExplicitContext,
+  Instrumentation,
   jsonEncoder,
   sampler,
+  TraceId,
   Tracer,
 } from 'zipkin';
 import { expressMiddleware } from 'zipkin-instrumentation-express';
-import wrapGot from 'zipkin-instrumentation-gotjs';
 import { HttpLogger } from 'zipkin-transport-http';
 
 const HOST = process.env.HOST || '127.0.0.1';
@@ -38,14 +39,18 @@ const tracer = new Tracer({
   localServiceName: serviceName,
   sampler: new sampler.CountingSampler(1),
 });
-wrapGot(got, { tracer, serviceName, remoteServiceName });
+const recipeInstance: Got = wrapGot({
+  tracer,
+  serviceName,
+  remoteServiceName,
+});
 
 // Add the Zipkin middleware
 app.use(expressMiddleware({ tracer }));
 
 app.get('/', async (_req, res) => {
   const producer_data = await tracer.local('get_root', () => {
-    return got(`http://${TARGET}/recipes/42`).json();
+    return recipeInstance(`http://${TARGET}/recipes/42`).json();
   });
 
   res.json({
@@ -58,3 +63,82 @@ app.get('/', async (_req, res) => {
 app.listen(PORT, HOST, () => {
   console.log(`Consumer running at http://${HOST}:${PORT}/`);
 });
+
+function wrapGot(options: {
+  tracer: Tracer;
+  serviceName: string;
+  remoteServiceName: string;
+}) {
+  const instrumentation = new Instrumentation.HttpClient({
+    tracer: options.tracer,
+    serviceName: options.serviceName,
+    remoteServiceName: options.remoteServiceName,
+  });
+
+  return got.extend({
+    hooks: {
+      init: [
+        (opts) => {
+          const ctx = getZipkinContext(opts);
+          ctx.parentId = tracer.id;
+        },
+      ],
+      beforeRequest: [
+        (opts) => {
+          const url = opts.url.href;
+          const method = opts.method || 'GET';
+          const ctx = getZipkinContext(opts);
+          tracer.letId(ctx.parentId, () => {
+            instrumentation.recordRequest(opts, url, method);
+            ctx.traceId = tracer.id;
+          });
+        },
+      ],
+      afterResponse: [
+        (res) => {
+          const ctx = getZipkinContext(res.request.options);
+          tracer.scoped(() => {
+            instrumentation.recordResponse(ctx.traceId, `${res.statusCode}`);
+          });
+          return res;
+        },
+      ],
+      beforeError: [
+        (err) => {
+          if (!err.options) return err;
+          const ctx = getZipkinContext(err.options);
+          tracer.scoped(() => {
+            instrumentation.recordError(ctx.traceId, err);
+          });
+          return err;
+        },
+      ],
+    },
+  });
+}
+
+function getZipkinContext(opts: GotJsonOptionWithZipkin): {
+  traceId: TraceId;
+  parentId: TraceId;
+} {
+  if (!opts._zipkin) {
+    Object.assign(opts, { _zipkin: {} });
+  }
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  return opts._zipkin!;
+}
+
+type Merge<t1, t2> = Except<t1, Extract<keyof t1, keyof t2>> & t2;
+type Except<ObjectType, KeysType extends keyof ObjectType> = Pick<
+  ObjectType,
+  Exclude<keyof ObjectType, KeysType>
+>;
+export type GotJsonOptionWithZipkin = Merge<
+  Options,
+  {
+    _zipkin?: {
+      traceId: TraceId;
+      parentId: TraceId;
+    };
+  }
+>;
