@@ -1,5 +1,17 @@
 Follow the book [Thomas Hunter. Distributed Systems with Node.js][1], and write some code.
 
+## Dependencies
+
+use `typescript` dev-dependencies.
+
+- `express` : APP framework
+- `@grpc/*` : gRPC
+- `graphql`, `express-graphql` : graphql
+- `got` : HTTP fetcher
+- `pino` : logger
+- `statsd-client` : metrics
+- `zipkin*` : request tracing
+
 ## JavaScript vs Node.js
 
 JavaScript 是單線程的，但可以透過 `message passing` 傳遞訊息來和不同線程溝通

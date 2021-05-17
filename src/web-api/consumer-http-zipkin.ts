@@ -3,7 +3,7 @@
  * ---
  * 1. docker run -p 9411:9411 -it --name zipkin openzipkin/zipkin-slim
  * 2. npx ts-node src/web-api/consumer-http-zipkin.ts
- * 3. npx ts-node src/recipe-api/producer-http-basic.ts
+ * 3. npx ts-node src/recipe-api/producer-http-zipkin.ts
  */
 import express from 'express';
 import got, { Got, Options } from 'got';
