@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log
+Dockerfile
+.git
+tsconfig.*
+# editor
+.vscode
+.editorconfig
+.eslintrc
+.gitignore
+.mocharc.js
+README.md
+# application
+src
+haproxy
