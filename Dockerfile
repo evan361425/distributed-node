@@ -5,6 +5,9 @@ FROM node:14.8.0-alpine3.12 AS deps
 WORKDIR /srv
 # package-lock.json, package.json
 COPY package*.json ./
+# tsconfig.production.json, tsconfig.json, tsconfig.base.json
+COPY tsconfig.* ./
+COPY src ./src
 # install and compile
 RUN npm i --ignore-scripts \
   && npm run compile \
@@ -38,11 +41,28 @@ RUN apk add --no-cache libstdc++ \
 WORKDIR /srv
 COPY --from=deps /srv/node_modules ./node_modules
 # best practice, ignore file will show in .dockerignore
-COPY . .
+COPY --from=deps /srv/dist ./dist
 
 EXPOSE 1337
 # Application ENV
 ENV HOST 0.0.0.0
 ENV PORT 1337
+# ENV NODE_ENV production
+
+# Set the user to use when running this image
+# USER node
+# If need change privilege
+# RUN groupmod -g 999 node && usermod -u 999 -g 999 node
+
 # final run up server
 CMD [ "node", "dist/recipe-api/producer-http-basic.js" ]
+
+# docker build -t evan361425/recipe-api:v0.0.1 .
+
+# docker history evan361425/recipe-api:v0.0.1
+
+# docker run -m "300M" --memory-swap "1G" \
+#   --rm --name recipe-api-1 \
+#   -p 8000:1337 evan361425/recipe-api:v0.0.1
+
+# http://localhost:8000/recipes/42

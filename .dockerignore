@@ -2,7 +2,6 @@ node_modules
 npm-debug.log
 Dockerfile
 .git
-tsconfig.*
 # editor
 .vscode
 .editorconfig
@@ -11,5 +10,4 @@ tsconfig.*
 .mocharc.js
 README.md
 # application
-src
 haproxy
