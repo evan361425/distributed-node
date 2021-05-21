@@ -1,3 +1,4 @@
+# http://docker.com/blog/docker-hub-experimental-cli-tool/?utm_source=docker&utm_medium=inproductad&utm_campaign=totw-hub-tool
 # dependencies stage
 FROM node:14.8.0-alpine3.12 AS deps
 

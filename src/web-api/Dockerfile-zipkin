@@ -1,0 +1,16 @@
+FROM node:14.8.0-alpine3.12
+WORKDIR /srv
+
+COPY package*.json ./
+COPY tsconfig.* ./
+COPY src ./src
+
+RUN npm i --ignore-scripts \
+  && npm run compile \
+  && rm -rf ./node_modules \
+  # clean install
+  && npm ci --only=production
+
+COPY . .
+
+CMD [ "node", "dist/web-api/consumer-http-zipkin.js" ]
