@@ -56,14 +56,14 @@ ENV PORT 1337
 # RUN groupmod -g 999 node && usermod -u 999 -g 999 node
 
 # final run up server
-CMD [ "node", "dist/recipe-api/producer-http-basic.js" ]
+CMD [ "node", "dist/web-api/consumer-http-basic.js" ]
 
-# docker build -t evan361425/recipe-api:v0.0.1 .
+# docker build -t evan361425/web-api:v0.0.1 -f Dockerfile-web .
 
-# docker history evan361425/recipe-api:v0.0.1
+# docker history evan361425/web-api:v0.0.1
 
 # docker run -m "300M" --memory-swap "1G" \
-#   --rm --name recipe-api-1 \
-#   -p 8000:1337 evan361425/recipe-api:v0.0.1
+#   --rm --name web-api-1 \
+#   -p 8000:1337 evan361425/web-api:v0.0.1
 
-# http://localhost:8000/recipes/42
+# http://localhost:8000

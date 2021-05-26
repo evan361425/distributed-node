@@ -10,6 +10,7 @@
     "grpc",
     "haproxy",
     "healthcheck",
+    "kubernetes",
     "openzipkin",
     "pino",
     "zipkin"

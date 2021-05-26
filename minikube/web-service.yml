@@ -1,0 +1,46 @@
+# kubectl apply -f minikube/web-service.yml
+apiVersion: v1
+
+kind: Service
+
+metadata:
+  name: web-api-service
+
+spec:
+  type: NodePort
+  selector:
+    app: web-api
+  ports:
+    - port: 1337
+# --- is use for separate files
+---
+# https://kubernetes.io/docs/concepts/services-networking/ingress/
+# when created, show info:
+#    kubectl get ingress
+# curl the api from address you get
+#    curl -H "Host: example.org" http://192.168.64.2
+#    curl -H "Host: wrong.org" http://192.168.64.2
+apiVersion: networking.k8s.io/v1
+
+kind: Ingress
+
+metadata:
+  name: web-api-ingress
+  annotations:
+    # nginx option is configurable
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+
+spec:
+  rules:
+    # if you have multiple host, you can forward from many host
+    - host: example.org
+      http:
+        paths:
+          # no-op, demonstration only
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: web-api-service
+                port:
+                  number: 1337

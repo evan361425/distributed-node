@@ -1,0 +1,27 @@
+# kubectl apply -f minikube/web-deployment.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-api
+  labels:
+    app: web-api
+
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: web-api
+  template:
+    metadata:
+      labels:
+        app: web-api
+    spec:
+      containers:
+        - name: web-api-container
+          image: web-api:v1
+          ports:
+            - containerPort: 1337
+          env:
+            # communicate directly to service by their name
+            - name: TARGET
+              value: "recipe-api-service"

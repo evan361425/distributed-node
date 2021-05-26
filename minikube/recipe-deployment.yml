@@ -1,0 +1,44 @@
+# build image first
+# https://minikube.sigs.k8s.io/docs/handbook/pushing/
+#
+# 1. ensure Minikube docker
+#    eval $(minikube -p minikube docker-env)
+# 2. build image
+#    docker build -t recipe-api:v1 docker -f Dockerfile-recipe .
+
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+# kubectl apply -f minikube/recipe-deployment.yml
+apiVersion: apps/v1
+
+kind: Deployment
+
+metadata:
+  name: recipe-api
+  labels:
+    app: recipe-api
+
+spec:
+  replicas: 5
+
+  selector:
+    matchLabels:
+      app: recipe-api
+
+  template:
+    metadata:
+      labels:
+        app: recipe-api
+    spec:
+      containers:
+        - name: recipe-api-container
+          image: recipe-api:v1
+          ports:
+            - containerPort: 1337
+
+          # health check
+          livenessProbe:
+            httpGet:
+              path: /recipes/42
+              port: 1337
+            initialDelaySeconds: 3
+            periodSeconds: 10

@@ -19,7 +19,7 @@ services:
   web-api:
     build:
       context: ./src/web-api
-      dockerfile: Dockerfile-zipkin
+      dockerfile: ./src/web-api/Dockerfile-zipkin
     ports:
       - '127.0.0.1:3000:3000'
     environment:
