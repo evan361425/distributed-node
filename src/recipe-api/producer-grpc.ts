@@ -11,9 +11,9 @@ const HOST = process.env.HOST || '127.0.0.1';
 const PORT = process.env.PORT || 4000;
 const packageDefinition = loadSync(__dirname + '/../shared/grpc-recipe.proto');
 // type generate by: npm run task-build-grpc-type
-const proto = (loadPackageDefinition(
+const proto = loadPackageDefinition(
   packageDefinition,
-) as unknown) as ProtoGrpcType;
+) as unknown as ProtoGrpcType;
 
 const recipeHandlers: RecipeServiceHandlers = {
   GetMetaData: (_call, cb) => {
@@ -38,7 +38,7 @@ const recipeHandlers: RecipeServiceHandlers = {
 };
 
 const server = new Server();
-server.addService(proto.recipe.RecipeService.service as any, recipeHandlers);
+server.addService(proto.recipe.RecipeService.service as never, recipeHandlers);
 
 server.bindAsync(
   `${HOST}:${PORT}`,

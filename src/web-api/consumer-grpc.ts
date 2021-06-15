@@ -5,12 +5,12 @@ import { promisify } from 'util';
 import { ProtoGrpcType } from '../shared/grpc-recipe';
 
 const HOST = '127.0.0.1';
-const PORT = parseInt(process.env.PORT ?? '3000', 10);
+const PORT = parseInt(process.env.PORT || '3000', 10);
 const TARGET = process.env.TARGET || 'localhost:4000';
 const packageDefinition = loadSync(__dirname + '/../shared/grpc-recipe.proto');
-const proto = (loadPackageDefinition(
+const proto = loadPackageDefinition(
   packageDefinition,
-) as unknown) as ProtoGrpcType;
+) as unknown as ProtoGrpcType;
 
 const client = new proto.recipe.RecipeService(
   TARGET,
