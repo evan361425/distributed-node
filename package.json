@@ -28,6 +28,8 @@
     "task:build-grpc-type": "node node_modules/@grpc/proto-loader/build/bin/proto-loader-gen-types.js --grpcLib=@grpc/grpc-js --outDir=src/shared/ src/shared/*.proto",
     "predev": "if [ -z ${NODE_FILE+x} ]; then echo 'missing variable NODE_FILE'; fi",
     "dev": "nodemon --config nodemon.json $NODE_FILE",
+    "preserve": "npm run predev",
+    "serve": "ts-node $NODE_FILE",
     "test": "mocha",
     "pretest:coverage": "rimraf src/**/*.js test/**/*.js",
     "test:coverage": "nyc mocha",
