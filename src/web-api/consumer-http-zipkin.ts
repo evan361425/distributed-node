@@ -38,10 +38,7 @@ app.use(expressMiddleware({ tracer }));
 app.get('/', async (_req, res) => {
   await tracer.local<Promise<void>>(
     'do_some_task',
-    () =>
-      new Promise((resolve) => {
-        setTimeout(resolve, 100);
-      }),
+    () => new Promise((resolve) => setTimeout(resolve, 100)),
   );
   const producer_data = await tracer.local('get_recipe', () =>
     recipeInstance(`http://${TARGET}/recipes/42`).json(),

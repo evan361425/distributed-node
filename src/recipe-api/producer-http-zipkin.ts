@@ -21,24 +21,18 @@ const PORT = parseInt(process.env.PORT || '4000');
 const ZIPKIN = process.env.ZIPKIN || 'http://localhost:9411/api/v2/spans';
 
 const app = express();
-const ctxImpl = new ExplicitContext();
-const logger = new HttpLogger({
-  endpoint: ZIPKIN,
-  jsonEncoder: jsonEncoder.JSON_V2,
-});
-const recorder = new BatchRecorder({ logger });
-const tracer = new Tracer({
-  ctxImpl,
-  recorder,
-  localServiceName: 'recipe-api',
-  sampler: new sampler.CountingSampler(1),
-});
+const tracer = createTracer();
 
 // Add the Zipkin middleware
 app.use(expressMiddleware({ tracer }));
 
 app.get('/recipes/:id', async (req, res) => {
   const id = Number(req.params.id);
+  await tracer.local<Promise<void>>(
+    'fetch_db',
+    () => new Promise((resolve) => setTimeout(resolve, 20)),
+  );
+
   if (id !== 42) {
     res.status(404).send({ error: 'not_found' });
   }
@@ -59,3 +53,19 @@ app.get('/recipes/:id', async (req, res) => {
 app.listen(PORT, HOST, () => {
   console.log(`Producer running at http://${HOST}:${PORT}`);
 });
+
+function createTracer() {
+  const ctxImpl = new ExplicitContext();
+  const logger = new HttpLogger({
+    endpoint: ZIPKIN,
+    jsonEncoder: jsonEncoder.JSON_V2,
+  });
+  const recorder = new BatchRecorder({ logger });
+
+  return new Tracer({
+    ctxImpl,
+    recorder,
+    localServiceName: 'recipe-api',
+    sampler: new sampler.CountingSampler(1),
+  });
+}
