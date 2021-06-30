@@ -107,4 +107,4 @@ dist
 *.key
 *.pem
 
-# package-lock.json
+package-lock.json
