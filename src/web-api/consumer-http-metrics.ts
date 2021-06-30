@@ -60,6 +60,7 @@ setInterval(() => {
   client.gauge('server.heap.size', h.used_heap_size);
   client.gauge('server.heap.limit', h.heap_size_limit);
 
+  // try to mock memory heap
   fs.readdir(__dirname, (err, list) => {
     if (err) return;
     client.gauge('server.descriptors', list.length);
