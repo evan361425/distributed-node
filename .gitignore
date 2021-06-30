@@ -106,3 +106,5 @@ dist
 # some key
 *.key
 *.pem
+
+package-lock.json

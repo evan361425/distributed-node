@@ -2,7 +2,7 @@ syntax = "proto3";
 package recipe;
 service RecipeService {
   rpc GetRecipe(RecipeRequest) returns (Recipe) {}
-  // rpc GetRecipeFirstIngredient(RecipeRequest) returns (Ingredient) {}
+  rpc GetRecipeFirstIngredient(RecipeRequest) returns (Ingredient) {}
   rpc GetMetaData(Empty) returns (Meta) {}
 }
 message Recipe {

@@ -18,24 +18,27 @@ const client = new proto.recipe.RecipeService(
 );
 const getMetaData = promisify(client.getMetaData.bind(client));
 const getRecipe = promisify(client.getRecipe.bind(client));
-// const getRecipeFirstIngredient = promisify(
-//   client.getRecipeFirstIngredient.bind(client),
-// );
+const getRecipeFirstIngredient = promisify(
+  client.getRecipeFirstIngredient.bind(client),
+);
 
 const app = express();
 app.get('/', async (_req, res) => {
-  const [meta, recipe] = await Promise.all([
-    getMetaData({}),
-    getRecipe({ id: 42 }),
-    // getRecipeFirstIngredient({ id: 42 }),
-  ]);
-
-  res.json({
-    consumer_pid: process.pid,
-    producer_data: meta,
-    recipe,
-    // firstIngredient,
-  });
+  try {
+    const [meta, recipe, firstIngredient] = await Promise.all([
+      getMetaData({}),
+      getRecipe({ id: 42 }),
+      getRecipeFirstIngredient({ id: 42 }),
+    ]);
+    res.json({
+      consumer_pid: process.pid,
+      producer_data: meta,
+      recipe,
+      firstIngredient,
+    });
+  } catch (error) {
+    return res.send('error');
+  }
 });
 
 app.listen(PORT, HOST, () => {

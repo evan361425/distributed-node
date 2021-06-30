@@ -35,12 +35,12 @@ const recipeHandlers: RecipeServiceHandlers = {
       ],
     });
   },
-  // GetRecipeFirstIngredient: (call, cb) => {
-  //   if (call.request.id !== 42) {
-  //     return cb(new Error(`unknown recipe ${call.request.id}`));
-  //   }
-  //   cb(null, { id: 1, name: 'Chicken', quantity: '1 lb' });
-  // },
+  GetRecipeFirstIngredient: (call, cb) => {
+    if (call.request.id !== 42) {
+      return cb(new Error(`unknown recipe ${call.request.id}`));
+    }
+    cb(null, { id: 1, name: 'Chicken', quantity: '1 lb' });
+  },
 };
 
 const server = new Server();
