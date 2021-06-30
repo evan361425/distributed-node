@@ -25,18 +25,8 @@ const TARGET = process.env.TARGET || 'localhost:4000';
 const ZIPKIN = process.env.ZIPKIN || 'http://localhost:9411/api/v2/spans';
 
 const app = express();
-const ctxImpl = new ExplicitContext();
-const logger = new HttpLogger({
-  endpoint: ZIPKIN,
-  jsonEncoder: jsonEncoder.JSON_V2,
-});
-const recorder = new BatchRecorder({ logger });
-const tracer = new Tracer({
-  ctxImpl,
-  recorder,
-  localServiceName: 'web-api',
-  sampler: new sampler.CountingSampler(1),
-});
+const tracer = createTracer();
+
 const recipeInstance: Got = wrapGot({
   tracer,
   remoteServiceName: 'recipe-api',
@@ -46,9 +36,16 @@ const recipeInstance: Got = wrapGot({
 app.use(expressMiddleware({ tracer }));
 
 app.get('/', async (_req, res) => {
-  const producer_data = await tracer.local('get_root', () => {
-    return recipeInstance(`http://${TARGET}/recipes/42`).json();
-  });
+  await tracer.local<Promise<void>>(
+    'do_some_task',
+    () =>
+      new Promise((resolve) => {
+        setTimeout(resolve, 100);
+      }),
+  );
+  const producer_data = await tracer.local('get_recipe', () =>
+    recipeInstance(`http://${TARGET}/recipes/42`).json(),
+  );
 
   res.json({
     consumer_pid: process.pid,
@@ -60,6 +57,22 @@ app.get('/', async (_req, res) => {
 app.listen(PORT, HOST, () => {
   console.log(`Consumer running at http://${HOST}:${PORT}/`);
 });
+
+function createTracer() {
+  const ctxImpl = new ExplicitContext();
+  const logger = new HttpLogger({
+    endpoint: ZIPKIN,
+    jsonEncoder: jsonEncoder.JSON_V2,
+  });
+  const recorder = new BatchRecorder({ logger });
+
+  return new Tracer({
+    ctxImpl,
+    recorder,
+    localServiceName: 'web-api',
+    sampler: new sampler.CountingSampler(1),
+  });
+}
 
 function wrapGot(options: { tracer: Tracer; remoteServiceName: string }) {
   const instrumentation = new Instrumentation.HttpClient({
