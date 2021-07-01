@@ -27,7 +27,7 @@ const ZIPKIN = process.env.ZIPKIN || 'http://localhost:9411/api/v2/spans';
 const app = express();
 const tracer = createTracer();
 
-const recipeInstance: Got = wrapGot({
+const gotInstance: Got = wrapGot({
   tracer,
   remoteServiceName: 'recipe-api',
 });
@@ -36,12 +36,9 @@ const recipeInstance: Got = wrapGot({
 app.use(expressMiddleware({ tracer }));
 
 app.get('/', async (_req, res) => {
-  await tracer.local<Promise<void>>(
-    'do_some_task',
-    () => new Promise((resolve) => setTimeout(resolve, 100)),
-  );
-  const producer_data = await tracer.local('get_recipe', () =>
-    recipeInstance(`http://${TARGET}/recipes/42`).json(),
+  const producer_data = await tracer.local<Promise<Record<string, unknown>>>(
+    'get_recipe',
+    () => gotInstance(`http://${TARGET}/recipes/42`).json(),
   );
 
   res.json({

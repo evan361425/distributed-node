@@ -3,28 +3,30 @@ services:
   zipkin:
     image: openzipkin/zipkin-slim:2.19
     ports:
-      - '127.0.0.1:9411:9411'
+      - '9411:9411'
 
-  recipe-api:
-    build:
-      context: ./src/recipe-api
-      dockerfile: ./src/recipe-api/Dockerfile-zipkin
-    ports:
-      - '127.0.0.1:4000:4000'
-    environment:
-      ZIPKIN: zipkin:9411
-    depends_on:
-      - zipkin
+  # recipe-api:
+  #   build:
+  #     context: ./
+  #     dockerfile: src/recipe-api/Dockerfile-zipkin
+  #   ports:
+  #     - '4000:4000'
+  #   environment:
+  #     ZIPKIN: zipkin:9411
+  #     PORT: 4000
+  #   depends_on:
+  #     - zipkin
 
-  web-api:
-    build:
-      context: ./src/web-api
-      dockerfile: ./src/web-api/Dockerfile-zipkin
-    ports:
-      - '127.0.0.1:3000:3000'
-    environment:
-      TARGET: recipe-api:4000
-      ZIPKIN: zipkin:9411
-    depends_on:
-      - zipkin
-      - recipe-api
+  # web-api:
+  #   build:
+  #     context: ./
+  #     dockerfile: src/web-api/Dockerfile-zipkin
+  #   ports:
+  #     - '3000:3000'
+  #   environment:
+  #     TARGET: recipe-api:4000
+  #     PORT: 3000
+  #     ZIPKIN: zipkin:9411
+  #   depends_on:
+  #     - zipkin
+  #     - recipe-api
